@@ -1,9 +1,9 @@
-package marat;
+package ru.snek;
 
 import java.io.*;
 import java.util.ArrayList;
 
-import static marat.Logger.*;
+import static ru.snek.Logger.*;
 
 public class FileInteractor {
 

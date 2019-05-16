@@ -1,6 +1,5 @@
-package marat;
+package ru.snek;
 
-import java.util.Iterator;
 import java.util.Stack;
 
 public class Logger {

@@ -1,11 +1,8 @@
-package marat;
+package ru.snek;
 
 import java.util.ArrayList;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-import static marat.Logger.log;
+import static ru.snek.Logger.log;
 
 public class CommandHandler {
 

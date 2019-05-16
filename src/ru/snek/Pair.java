@@ -1,4 +1,4 @@
-package marat;
+package ru.snek;
 
 public class Pair<T, S> {
     private T first;

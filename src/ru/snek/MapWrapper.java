@@ -1,14 +1,11 @@
-package marat;
-
-import com.sun.org.apache.xpath.internal.operations.Bool;
+package ru.snek;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import static marat.Logger.*;
-import static marat.FileInteractor.*;
+import static ru.snek.Logger.*;
+import static ru.snek.FileInteractor.*;
 
 public class MapWrapper {
     private static ConcurrentSkipListMap<String, Malefactor> map = new ConcurrentSkipListMap<>();

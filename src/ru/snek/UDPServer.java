@@ -1,12 +1,12 @@
-package marat;
+package ru.snek;
 
 import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
-import static marat.Logger.*;
-import static marat.Utils.*;
+import static ru.snek.Logger.*;
+import static ru.snek.Utils.*;
 
 public class UDPServer extends Server{
     private DatagramSocket socket;

@@ -1,11 +1,8 @@
-package marat;
+package ru.snek;
 
-import java.io.File;
-import java.io.IOException;
-
-import static marat.FileInteractor.*;
-import static marat.Logger.*;
-import static marat.Utils.getConsoleInput;
+import static ru.snek.FileInteractor.*;
+import static ru.snek.Logger.*;
+import static ru.snek.Utils.getConsoleInput;
 
 public class Main {
     public static Type type;

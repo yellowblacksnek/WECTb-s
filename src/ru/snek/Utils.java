@@ -1,11 +1,11 @@
-package marat;
+package ru.snek;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-import static marat.Logger.handleException;
+import static ru.snek.Logger.handleException;
 
 public class Utils {
     private static Scanner scan = new Scanner(System.in);

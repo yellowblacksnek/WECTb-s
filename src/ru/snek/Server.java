@@ -1,8 +1,4 @@
-package marat;
-
-import java.io.*;
-
-import static marat.Logger.*;
+package ru.snek;
 
 public abstract class Server {
     protected MapWrapper wrapper;

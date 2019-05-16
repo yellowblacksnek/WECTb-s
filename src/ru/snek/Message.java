@@ -1,4 +1,4 @@
-package marat;
+package ru.snek;
 
 import java.io.Serializable;
 

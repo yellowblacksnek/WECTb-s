@@ -1,4 +1,4 @@
-package marat;
+package ru.snek;
 
 import java.io.*;
 import java.net.*;
@@ -9,8 +9,8 @@ import java.nio.channels.SocketChannel;
 import java.util.Arrays;
 import java.util.Vector;
 
-import static marat.Logger.*;
-import static marat.Utils.*;
+import static ru.snek.Logger.*;
+import static ru.snek.Utils.*;
 
 public class TCPServer extends Server{
     private ServerAccepterWrapper saw;

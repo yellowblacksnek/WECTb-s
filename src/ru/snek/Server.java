@@ -1,9 +1,11 @@
 package ru.snek;
 
+import ru.snek.Collection.MapWrapper;
+
 public abstract class Server {
     protected CommandHandler com;
     protected boolean std;
-    protected boolean alive;
+    private boolean alive;
 
     protected Server(String file) {
         com = new CommandHandler(new MapWrapper(file));

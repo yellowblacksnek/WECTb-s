@@ -5,8 +5,8 @@ import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
-import static ru.snek.Logger.*;
-import static ru.snek.Utils.*;
+import static ru.snek.Utils.Logger.*;
+import static ru.snek.Utils.Utils.*;
 
 public class UDPServer extends Server{
     private DatagramSocket socket;

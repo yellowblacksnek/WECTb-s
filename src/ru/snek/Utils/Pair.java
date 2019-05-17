@@ -1,4 +1,4 @@
-package ru.snek;
+package ru.snek.Utils;
 
 public class Pair<T, S> {
     private T first;

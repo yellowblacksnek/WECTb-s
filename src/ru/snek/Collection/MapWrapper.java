@@ -1,16 +1,29 @@
-package ru.snek;
+package ru.snek.Collection;
+
+import ru.snek.Main;
+import ru.snek.Utils.Pair;
+import ru.snek.Utils.Utils;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import static ru.snek.Logger.*;
-import static ru.snek.FileInteractor.*;
+import static ru.snek.Utils.Logger.*;
+import static ru.snek.Utils.FileInteractor.*;
 
 public class MapWrapper {
-    private static ConcurrentSkipListMap<String, Malefactor> map = new ConcurrentSkipListMap<>();
+    private static ConcurrentSkipListMap<String, Malefactor> map = new ConcurrentSkipListMap<>();;
     private static final long maxMapSize = 50000;
     private File file;
+
+    private static class EmptyFileException extends Exception {}
+    private static class CollectionOverflowException extends Exception {
+        @Override
+        public String getMessage() {
+            return "Коллекция достигла максимального размера: " + maxMapSize +".";
+        }
+    }
 
     public MapWrapper(String path) {
         try { file = openFile(path); }
@@ -18,13 +31,18 @@ public class MapWrapper {
             errprintln(e.getMessage());
             System.exit(1);
         }
+        boolean failed = false;
         print("Выполняется загрузка коллекции из файла: " + path +".");
         Pair<Boolean, Exception> result = addElements(getFileLines(file));
         String resultString;
         if(result.getSecond() == null) {
             if(result.getFirst()) resultString = "Коллекция загружена из файла: ";
-            else resultString = "Ой ну хз: ";
+            else resultString = "Файл пуст, коллекция пуста. Файл: ";
+        } else if(result.getSecond() instanceof CollectionOverflowException) {
+            resultString = "Коллекция загружена, но достигла максимального размера: " + maxMapSize + ".\n" +
+            "Файл: ";
         } else {
+            failed = true;
             resultString = "При загрузке коллекции произошла ошибка: \n" +
                         result.getSecond().getMessage() +"\nФайл: " ;
         }
@@ -47,12 +65,12 @@ public class MapWrapper {
 
     private static void addElementNoCheck (String str) throws Exception {
         if (str.equals("")) {
-            throw new Exception("Пустая строка.");
+            throw new EmptyFileException();
         }
         Malefactor mf = elementFromString(str);
         String key = str.substring(1, str.indexOf(' ') - 2);
         if(map.size() >= maxMapSize) {
-            throw new Exception("Коллекция достигла максимального размера: " + maxMapSize + ".");
+            throw new CollectionOverflowException();
         }
         if(mf == null) {
             throw new Exception("Элемент почему-то null.");
@@ -64,14 +82,15 @@ public class MapWrapper {
         int counter = 0;
         try {
             for (String each : list) {
-                addElementNoCheck(each);
-                ++counter;
+                try {
+                    addElementNoCheck(each);
+                    ++counter;
+                } catch (EmptyFileException e) {}
             }
         } catch (Exception e) {
-            boolean someAdded = counter > 0;
-            return new Pair<>(someAdded, e);
+            return new Pair<>(counter > 0, e);
         }
-        return new Pair<>(true, null);
+        return new Pair<>(counter > 0, null);
     }
 
     private static Malefactor elementFromString(String str) throws Exception {
@@ -174,13 +193,11 @@ public class MapWrapper {
 
     public static ConcurrentSkipListMap<String, Malefactor> getMap() {return map;}
 
-    public HashMap<String, Malefactor> show() {
-        //ConcurrentSkipListMap<String, Malefactor> cloned = map.clone();
+    public ConcurrentSkipListMap<String, Malefactor> show() {
         MapValuesComparator comp = new MapValuesComparator(map, Main.sorting);
         ConcurrentSkipListMap<String, Malefactor> sorted = new ConcurrentSkipListMap<>(comp);
         sorted.putAll(map);
-        new LinkedHashMap<String, Malefactor>(map);
-        return new LinkedHashMap<String, Malefactor>(map);
+        return sorted;
     }
 
     public synchronized static String clear() {
@@ -203,7 +220,10 @@ public class MapWrapper {
         map.clear();
         ArrayList<String> lines = getFileLines(file);
         Pair<Boolean, Exception> result = addElements(lines);
-        if (result.getSecond() == null) message = "Коллекция загружена из файла.";
+        if (result.getSecond() == null) {
+            message = "Коллекция загружена из файла.";
+            if(!result.getFirst()) message += " Файл был пуст.";
+        }
         else {
             message = "Произошла ошибка: \n" + result.getSecond().getMessage() + "\n" +
                     "Коллекция не изменилась.";

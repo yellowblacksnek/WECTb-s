@@ -1,4 +1,4 @@
-package ru.snek;
+package ru.snek.Collection;
 
 public interface Thingable {
 }

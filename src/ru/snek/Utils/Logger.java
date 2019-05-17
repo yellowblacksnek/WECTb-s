@@ -1,4 +1,4 @@
-package ru.snek;
+package ru.snek.Utils;
 
 import java.util.Stack;
 
@@ -9,41 +9,26 @@ public class Logger {
     public static void errprintln(Object obj) { System.err.println(obj); }
     public static void log(Object obj) { System.out.println("LOG: " + obj); }
 
-    private static class ExceptionInfo {
-        private StackTraceElement[] stackTrace;
-        private String message;
+    private static Stack<Exception> logs = new Stack<>();
 
-        public ExceptionInfo(StackTraceElement[] arr, String message) {
-            stackTrace = arr;
-            this.message = message;
-        }
-
-        public String toString() {
-            String out = "";
-            out += message + '\n';
-            for(StackTraceElement el : stackTrace) out += el.toString() +'\n';
-            out += "---------------";
-            return out;
-        }
-    }
-
-    private static Stack<ExceptionInfo> logs = new Stack<>();
-
-    public static void addToLogs(StackTraceElement[] el, String message) {
-        logs.push(new ExceptionInfo(el, message));
+    public static void addToLogs(Exception e) {
+        logs.push(e);
     }
     public static void printLogs() {
         if(logs.empty()) {
             errprintln("Пусто");
             return;
         }
-        for(ExceptionInfo e : logs) errprintln(e);
+        for(Exception e : logs) {
+            errprintln(e);
+            e.printStackTrace();
+        }
         logs.clear();
     }
 
     public static void handleException(Exception exception) {
         try {
-            addToLogs(exception.getStackTrace(), exception.getClass().getName());
+            addToLogs(exception);
             throw exception;
         }
         catch (ClassNotFoundException e) {
@@ -52,8 +37,6 @@ public class Logger {
         }
         catch (Exception e) {
             //errprintln("Произошла ошибка: " + e.getMessage());
-            //e.printStackTrace();
-            //e.printStackTrace();
         }
     }
 }

@@ -1,8 +1,12 @@
 package ru.snek;
 
+import ru.snek.Collection.Malefactor;
+import ru.snek.Collection.MapWrapper;
+import ru.snek.Utils.Pair;
+
 import java.util.ArrayList;
 
-import static ru.snek.Logger.log;
+import static ru.snek.Utils.Logger.log;
 
 public class CommandHandler {
 
@@ -128,7 +132,6 @@ public class CommandHandler {
 
     private Message _import(String fileStr) {
         String data = null;
-        //TreeMap<String, Malefactor> map = new TreeMap<>();
         boolean correct = false;
         int counter = 0;
         ArrayList<String> lines = new ArrayList<>();

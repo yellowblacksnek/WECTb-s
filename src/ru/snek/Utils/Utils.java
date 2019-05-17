@@ -1,11 +1,13 @@
-package ru.snek;
+package ru.snek.Utils;
+
+import ru.snek.Message;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-import static ru.snek.Logger.handleException;
+import static ru.snek.Utils.Logger.handleException;
 
 public class Utils {
     private static Scanner scan = new Scanner(System.in);

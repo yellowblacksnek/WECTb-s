@@ -6,13 +6,12 @@ import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousCloseException;
-import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Arrays;
 import java.util.Vector;
 
-import static ru.snek.Logger.*;
-import static ru.snek.Utils.*;
+import static ru.snek.Utils.Logger.*;
+import static ru.snek.Utils.Utils.*;
 
 public class TCPServer extends Server{
     private ServerAccepterWrapper saw;
@@ -26,14 +25,14 @@ public class TCPServer extends Server{
 
     public void loop() {
         try {
-            while(saw.isOpen() && alive) {
+            while(saw.isOpen() && isAlive()) {
                 ConnectionWrapper con = saw.accept();
                 connections.add(con);
                 println("Новый клиент. (Всего: "+ connections.size()+ ")");
                 new Thread(() -> {
                     try {
                         while (con.isOpen()) {
-                            if(!alive) {
+                            if(!isAlive()) {
                                 con.close();
                                 return;
                             }
@@ -42,15 +41,21 @@ public class TCPServer extends Server{
                                 con.close();
                                 break;
                             }
-                            Message response = com.handleCommand(command);
-                            sendResponse(response, con);
+                            new Thread(() -> {
+                                try {
+                                    Message response = com.handleCommand(command);
+                                    sendResponse(response, con);
+                                } catch(Exception e) {
+                                    if(isAlive()) handleException(e);
+                                }
+                            }).start();
                         }
                         connections.remove(con);
                         println("Клиент отключился.");
                     } catch(AsynchronousCloseException e) {
-                        if(alive) handleException(e);
+                        if(isAlive()) handleException(e);
                     } catch (IOException e) {
-                        if(alive) println("Клиент отключился. (Выброшено IO-исключение)");
+                        if(isAlive()) println("Клиент отключился. (Выброшено IO-исключение)");
                         handleException(e);
                     } finally {
                         try {
@@ -61,7 +66,7 @@ public class TCPServer extends Server{
                 }).start();
             }
         } catch(AsynchronousCloseException e) {
-            if(alive) handleException(e);
+            if(isAlive()) handleException(e);
         } catch(IOException e) {
             handleException(e);
         }

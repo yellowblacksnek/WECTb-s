@@ -1,8 +1,10 @@
 package ru.snek;
 
-import static ru.snek.FileInteractor.*;
-import static ru.snek.Logger.*;
-import static ru.snek.Utils.getConsoleInput;
+import ru.snek.Collection.MapValuesComparator;
+
+import static ru.snek.Utils.FileInteractor.*;
+import static ru.snek.Utils.Logger.*;
+import static ru.snek.Utils.Utils.getConsoleInput;
 
 public class Main {
     public static Type type;
@@ -64,13 +66,15 @@ public class Main {
     }
 
     private static void createConsoleListener() {
+        Thread consoleListener =
         new Thread(() -> {
             while(server.isAlive()) {
                 String input = getConsoleInput();
                 if (input.trim().equals("log")) printLogs();
                 else if (input.trim().equals("exit") || input.trim().equals("quit")) server.close();
             }
-        }).start();
+        });
+        consoleListener.start();
     }
 }
 

@@ -1,4 +1,4 @@
-package ru.snek;
+package ru.snek.Collection;
 
 import java.io.Serializable;
 import java.util.ArrayList;

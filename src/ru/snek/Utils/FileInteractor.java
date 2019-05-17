@@ -1,9 +1,9 @@
-package ru.snek;
+package ru.snek.Utils;
 
 import java.io.*;
 import java.util.ArrayList;
 
-import static ru.snek.Logger.*;
+import static ru.snek.Utils.Logger.*;
 
 public class FileInteractor {
 

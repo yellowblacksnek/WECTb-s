@@ -1,16 +1,12 @@
 package ru.snek;
 
 public abstract class Server {
-    protected MapWrapper wrapper;
     protected CommandHandler com;
-    protected int port;
     protected boolean std;
     protected boolean alive;
 
-    protected Server(String file, int port) {
-        wrapper = new MapWrapper(file);
-        com = new CommandHandler(wrapper);
-        this.port = port;
+    protected Server(String file) {
+        com = new CommandHandler(new MapWrapper(file));
         std = Main.real == Main.Realisation.STD;
         alive = true;
         Runtime.getRuntime().addShutdownHook(new Thread(com::save));

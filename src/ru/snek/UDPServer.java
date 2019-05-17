@@ -14,7 +14,7 @@ public class UDPServer extends Server{
     private static final int maxBufferSize = 65507;
 
     public UDPServer(String file, int port){
-        super(file, port);
+        super(file);
         SocketAddress a = new InetSocketAddress(port);
         try {
             if (std) {

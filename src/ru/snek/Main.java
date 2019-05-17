@@ -8,9 +8,29 @@ public class Main {
     public static Type type;
     public static Realisation real;
     public static MapValuesComparator.Sorting sorting;
+    private static Server server;
+
+    public enum Type { TCP, UDP }
+    public enum Realisation {STD, CHANNEL }
 
 
-    public static void main(String []args)  {
+    public static void main(String[] args)  {
+        checkInitialArgs(args);
+        configure();
+        String collectionFile = args[0];
+        int port = Integer.valueOf(args[1]);
+        try {
+            if (type == Type.TCP) server = new TCPServer(collectionFile, port);
+            else server = new UDPServer(collectionFile, port);
+        } catch(Exception e) {
+            errprintln("Не удалось запустить сервер.\n" + e.getMessage());
+            System.exit(1);
+        }
+        createConsoleListener();
+        server.loop();
+    }
+
+    private static void checkInitialArgs(String[] args) {
         if(args.length != 2) {
             errprintln("Необходимо указать файл и порт.");
             System.exit(1);
@@ -20,24 +40,30 @@ public class Main {
             errprintln("Неправильный порт.");
             System.exit(1);
         }
+    }
+
+    private static void configure() {
         String config = null;
         try {
             config = getFileString(openFile("serverConfig"));
-            config = config.replaceAll("\n", "");
-            config = config.replaceAll("\\s+", " ");
         }
         catch (Exception e) {
             errprintln(e.getMessage());
             System.exit(1);
         }
-        String collectionFile = args[0];
+        config = config.replaceAll("\n", "");
+        config = config.replaceAll("\\s+", " ");
+        try {
+            type = Type.valueOf(config.split(" ")[0]);
+            real = Realisation.valueOf(config.split(" ")[1]);
+            sorting = MapValuesComparator.Sorting.valueOf(config.split(" ")[2]);
+        } catch (Exception e) {
+            errprintln("Неверный формат конфиг-файла.\n" + e.getMessage());
+            System.exit(1);
+        }
+    }
 
-        type = getType(config);
-        real = getRealisation(config);
-        sorting = getSorting(config);
-        Server server;
-        if(type == Type.TCP) server = new TCPServer(collectionFile, port);
-        else server = new UDPServer(collectionFile, port);
+    private static void createConsoleListener() {
         new Thread(() -> {
             while(server.isAlive()) {
                 String input = getConsoleInput();
@@ -45,22 +71,6 @@ public class Main {
                 else if (input.trim().equals("exit") || input.trim().equals("quit")) server.close();
             }
         }).start();
-        server.loop();
-    }
-
-    public enum Type { TCP, UDP }
-    public enum Realisation {STD, CHANNEL }
-
-    public static Type getType(String file) {
-        return Type.valueOf(file.split(" ")[0]);
-    }
-
-    public static Realisation getRealisation(String file) {
-        return Realisation.valueOf(file.split(" ")[1]);
-    }
-
-    public static MapValuesComparator.Sorting getSorting(String file) {
-        return MapValuesComparator.Sorting.valueOf(file.split(" ")[2]);
     }
 }
 

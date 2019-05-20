@@ -48,6 +48,7 @@ public class MapWrapper {
         }
         println("\033[2K\r" + resultString + path +".");
         if(result.getSecond() != null && result.getFirst()) println("Часть элементов была загружена.");
+        if(failed) System.exit(1);
     }
 
     public static String addElement(String key, Malefactor element) throws Exception {

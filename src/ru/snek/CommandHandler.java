@@ -75,11 +75,7 @@ public class CommandHandler {
                 "birthDate : текущие дата и время\n"+
                 "condition : AWAKEN\n" +
                 "canSleep : false\n" +
-                "abToLift : HEAVY\n" +
-                "pocket : Пусто\n"+
-                "Для заполнения списка (pocket) элементы вводить в фигурных скобках ({, }) через запятую.\n" +
-                "Возможные элементы списков: Knife, Box, Lamp. Тип элемента списка указывается в поле \"ключ\", свойства в поле \"значение\".\n"+
-                "Для указания свойств Lamp использовать массив (квадратные скобки), куда занести пару булевых значений.";
+                "abilityToLift : HEAVY";
         return new Message<>("help", data);
     }
 

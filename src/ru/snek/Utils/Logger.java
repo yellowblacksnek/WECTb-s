@@ -20,7 +20,6 @@ public class Logger {
             return;
         }
         for(Exception e : logs) {
-            errprintln(e);
             e.printStackTrace();
         }
         logs.clear();
@@ -30,12 +29,7 @@ public class Logger {
         try {
             addToLogs(exception);
             throw exception;
-        }
-        catch (ClassNotFoundException e) {
-            errprintln("Ошибка при десериализации.\n"+e.getMessage());
-            System.exit(1);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             //errprintln("Произошла ошибка: " + e.getMessage());
         }
     }

@@ -95,7 +95,7 @@ public class MapWrapper {
 
     private static Malefactor elementFromString(String str) throws Exception {
         String[] arr = str.split(";");
-        if (arr.length != 10) {
+        if (arr.length != 9) {
             throw new Exception("Неверный формат данных!");
         }
         for (int i = 0; i < arr.length; ++i) {
@@ -109,13 +109,12 @@ public class MapWrapper {
         mf.setCondition(Malefactor.Condition.valueOf(arr[6]));
         mf.setAbilityToLift(Malefactor.Box.Weight.valueOf(arr[7]));
         mf.setCanSleep(Boolean.valueOf(arr[8]));
-        mf.setPocketContent(parseArr(arr[9], mf));
         return mf;
     }
 
     private static String elementToString(String key) {
         Malefactor mf = map.get(key);
-        String arr[] = new String[10];
+        String arr[] = new String[9];
         arr[0] = "\""+key+"\"";
         arr[1] = '\"'+mf.getName()+'\"';
         arr[2] = Integer.toString(mf.getAge());
@@ -125,70 +124,12 @@ public class MapWrapper {
         arr[6] = mf.getCondition().name();
         arr[7] = mf.getAbilityToLift().name();
         arr[8] = '\"'+Boolean.toString(mf.isCanSleep())+'\"';
-        arr[9] = parseThingable(mf.getPocketContent());
         StringBuilder str = new StringBuilder();
         for(int i = 0; i < arr.length; ++i) {
             str.append(arr[i]);
             if(i < arr.length-1) str.append("; ");
         }
         return str.toString();
-    }
-
-    private static String parseThingable(ArrayList<Thingable> arr) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("\"");
-        for(Thingable t : arr) {
-            String[] locArr = t.toString().split("\\{");
-            builder.append(locArr[0]);
-            if(locArr.length > 1) {
-                builder.append("{");
-                locArr = locArr[1].split(",");
-                for(int i = 0; i < locArr.length; ++i) {
-                    builder.append(locArr[i].split("=")[1]);
-                    if(i < locArr.length-1) builder.append(", ");
-                }
-            }
-            if(arr.indexOf(t) < arr.size()-1) builder.append(", ");
-        }
-        builder.append("\"");
-        return builder.toString();
-    }
-
-    private static ArrayList<Thingable> parseArr(String str, Malefactor mf) throws IllegalArgumentException {
-        ArrayList<Thingable> result = new ArrayList<>();
-        str = str.substring(1, str.length()-1);
-        if(str.equals("")) return  result;
-        ArrayList<Integer> commas = Utils.getExtCommas(str);
-        ArrayList<String> strArr = Utils.splitStrByIndex(str, commas);
-        if(strArr.size() == 0) strArr.add(str);
-
-        for(String s : strArr) {
-            String[] sArr = s.split("\\{");
-            switch (sArr[0]) {
-                case "Knife" :
-                    Malefactor.Knife knife =  mf.new Knife();
-                    result.add(knife);
-                    break;
-                case "Lamp" :
-                    Malefactor.Lamp lamp = mf.new Lamp();
-                    sArr[1] = sArr[1].substring(0, sArr[1].length()-1);
-                    String[] fields = sArr[1].split(",");
-                    if((fields[0].trim().equals("true") || fields[0].trim().equals("false"))
-                    && (fields[1].trim().equals("true") || fields[1].trim().equals("false"))) {
-                        lamp.setHidden(Boolean.valueOf(fields[0].trim()));
-                        lamp.setCond(Boolean.valueOf(fields[1].trim()));
-                        result.add(lamp);
-                    }
-                    else throw new IllegalArgumentException();
-                    break;
-                case "Box" :
-                    sArr[1] = sArr[1].substring(0, sArr[1].length()-1);
-                    Malefactor.Box box = new Malefactor.Box(Malefactor.Box.Weight.valueOf(sArr[1].trim()));
-                    result.add(box);
-                    break;
-            }
-        }
-        return result;
     }
 
     public static ConcurrentSkipListMap<String, Malefactor> getMap() {return map;}
